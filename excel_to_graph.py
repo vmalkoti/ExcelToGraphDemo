@@ -1,8 +1,10 @@
-#%%
-
+import os
+import sys
 import xlrd
 import networkx as nx
 import matplotlib.pyplot as plt
+
+__dirname__ = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_graph_from(xlsx_path):
@@ -67,7 +69,8 @@ def plot_nx_simple_graph(graph):
     plt.figure(figsize=(15,10))
     plt.title('Simple graph using networkx')
     nx.draw_planar(flowchart, with_labels=True, node_size=1e4)
-    plt.savefig('networkx_simple.png')
+    outpath = os.path.join(__dirname__, 'networkx_simple.png')
+    plt.savefig(outpath)
 
 
 def plot_nx_custom_graph(graph):
@@ -87,7 +90,8 @@ def plot_nx_custom_graph(graph):
                     bbox=dict(facecolor='skyblue', 
                             edgecolor='b',
                             boxstyle='round,pad=1.0'))
-    plt.savefig('networkx_custom.png')
+    outpath = os.path.join(__dirname__, 'networkx_custom.png')
+    plt.savefig(outpath)
     
 
 def plot_nx_flowchart(graph):
@@ -112,7 +116,8 @@ def plot_nx_flowchart(graph):
     label_dict = dict(zip(graph_nodes, graph_nodes))    
     nx.draw_networkx_labels(graph, positions, label_dict, font_size=12)
     nx.draw_networkx_edges(graph, positions, node_size=1.5e4, width=3, arrowsize=10)
-    plt.savefig('networkx_flowchart.png')
+    outpath = os.path.join(__dirname__, 'networkx_flowchart.png')
+    plt.savefig(outpath)
 
 
 def plot_pygraphviz(graph):
@@ -123,8 +128,6 @@ def plot_pygraphviz(graph):
         graph: A networkx graph
     """
     agraph = nx.nx_agraph.to_agraph(graph)
-    # for node in agraph.nodes():
-    #     node.attr['shape'] = 'box'
     circle, rect, kite = get_flowchart_nodes_by_type(graph)
     for c in circle:
         agraph.get_node(c).attr['shape']='oval'
@@ -133,7 +136,8 @@ def plot_pygraphviz(graph):
     for k in kite:
         agraph.get_node(k).attr['shape']='diamond'
     agraph.layout(prog='fdp')
-    agraph.draw('/home/malkoti/dev/pygraphviz_out.png', format='png')
+    outpath = os.path.join(__dirname__, 'pygraphviz_out.png')
+    agraph.draw(outpath, format='png')
 
 
 def plot_pydot(graph):
@@ -154,11 +158,12 @@ def plot_pydot(graph):
             node.set_shape('rect')
         else:
             node.set_shape('parallelogram')
-    pdot.write_png('/home/malkoti/dev/pydot_out.png')
+    outpath = os.path.join(__dirname__, 'pydot_out.png')
+    pdot.write_png(outpath)
 
 
-
-file_path = '/home/malkoti/dev/demo.xlsx'
+filename = 'demo.xlsx'
+file_path = os.path.join(__dirname__, filename)
 flowchart = get_graph_from(file_path)
 
 # 1. plotting network simple graph
@@ -176,4 +181,4 @@ plot_pygraphviz(flowchart)
 # 5. using pydot 
 plot_pydot(flowchart)
 
-# %%
+
